@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import os
 import torch
-import torch.nn as nn
+import torch.nn.functional as F
 import torchvision.models as models
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
@@ -59,11 +59,17 @@ def predict():
 
     with torch.no_grad():
         outputs = model(input_tensor)
-        _, predicted = torch.max(outputs, 1)
-        class_index = int(predicted.item())
-        class_name = CLASS_NAMES[class_index]
+        probs = F.softmax(outputs, dim=1).squeeze() 
+        topk = torch.topk(probs, k=3)
+        indices = topk.indices.tolist()
+        confidences = topk.values.tolist()
 
-    return jsonify({'prediction': class_name})
+    predictions = [
+        {"class": CLASS_NAMES[idx], "confidence": round(conf * 100, 2)}
+        for idx, conf in zip(indices, confidences)
+    ]
+
+    return jsonify({"predictions": predictions})
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
