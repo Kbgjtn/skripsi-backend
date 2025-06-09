@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+ultralytics
+
+# Use the headless version for smaller container size
+opencv-python-headless
+aiofiles
+python-multipart
+pydantic_settings

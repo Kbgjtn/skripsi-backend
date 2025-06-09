@@ -1,0 +1,16 @@
+services:
+  rest-svc:
+    build:
+      dockerfile: builds/Dockerfile
+      tags:
+        - coocobolo/rest-svc:latest
+    container_name: rest-svc
+    env_file:
+      - .env
+    ports:
+      - 8000:8000
+    restart: unless-stopped
+    volumes:
+      - rest_svc_data:/app
+volumes:
+  rest_svc_data:

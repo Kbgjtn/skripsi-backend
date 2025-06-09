@@ -1,0 +1,20 @@
+# Ignore files that shouldn't be copied into the Docker image
+
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+
+# include
+!assets/models
+
+# Ignore local data folders, we will mount them as volumes instead
+
+.dockerignore
+.git
+.gitignore
+README.md
+
