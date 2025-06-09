@@ -2,38 +2,14 @@ import subprocess
 import os
 import cv2
 
-from ultralytics import YOLO
 from typing import Dict, Any
 from pathlib import Path
 
-from fastapi import HTTPException
+from fastapi import FastAPI, HTTPException
 from .config import get_settings
-from contextlib import asynccontextmanager
 
 settings = get_settings()
 models: Dict[str, Any] = {}
-
-@asynccontextmanager
-async def lifespan():
-    """
-    Manages application startup and shutdown events.
-    - Creates necessary directories.
-    - Loads ML models into memory.
-    """
-    print("--- Server starting up ---")
-    # Ensure asset directories exist
-    settings.UPLOAD_DIRECTORY.mkdir(parents=True, exist_ok=True)
-    settings.PREDICTIONS_DIRECTORY.mkdir(parents=True, exist_ok=True)
-    
-    # Load models
-    models["classifier"] = YOLO(settings.YOLO_CLASSIFICATION_MODEL_PATH)
-    models["detection"] = YOLO(settings.YOLO_DETECTION_MODEL_PATH)
-    print("--- Models loaded successfully ---")
-    
-    yield
-    
-    print("--- Server shutting down ---")
-    models.clear()
 
 def predict_with_classifier(image_path: Path, imgsz: int) -> Dict[str, Any]:
     print(f"running yolo classification on {image_path}...")

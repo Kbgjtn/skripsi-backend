@@ -174,11 +174,19 @@ Ensure your project is structured as follows:
 │ ├── **init**.py
 │ ├── config.py
 │ └── main.py
+│ ├── **init**.py
+│ ├── config.py
+│ └── main.py
 ├── assets/
 │ └── models/
 │ ├── <classifier>.pt
 │ └── <detection>.pt
+│ └── models/
+│ ├── <classifier>.pt
+│ └── <detection>.pt
 ├── builds/
+│ ├── Dockerfile
+│ └── entrypoint.sh
 │ ├── Dockerfile
 │ └── entrypoint.sh
 ├── .env
@@ -194,7 +202,9 @@ Copy the example environment file to create your local configuration:
 ```cp example.env .env```
 
 You can now edit the .env file to change the server port, model paths, or supported file types. The default values will work out-of-the-box. 3. Add Your Models
+You can now edit the .env file to change the server port, model paths, or supported file types. The default values will work out-of-the-box. 3. Add Your Models
 
+Place your trained YOLO models into the assets/models/ directory. Ensure they are named cnn.pt (for classification) and detect.pt (for detection), or update the paths in your .env file. 4. Build and Run the Service
 Place your trained YOLO models into the assets/models/ directory. Ensure they are named cnn.pt (for classification) and detect.pt (for detection), or update the paths in your .env file. 4. Build and Run the Service
 
 From the root directory of the project, run the following command:
@@ -209,4 +219,3 @@ The API will be available at http://127.0.0.1:8000 (or whichever port you config
 To stop the running containers, press Ctrl+C in the terminal where compose is running, and then execute:
 
 ```docker-compose -f compose.yaml down```
-

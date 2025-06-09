@@ -1,6 +1,8 @@
 import time
 import aiofiles
 
+from ultralytics import YOLO
+from contextlib import asynccontextmanager
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
@@ -8,11 +10,35 @@ from fastapi import FastAPI, UploadFile, HTTPException, File, Query
 
 from .config import get_settings
 from . import util
-from . import predict
+from .predict import models, predict_with_classifier, predict_with_detection
 
 settings = get_settings()
 
-app = FastAPI(lifespan=predict.lifespan)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Manages application startup and shutdown events.
+    - Creates necessary directories.
+    - Loads ML models into memory.
+    """
+
+    print("--- Server starting up ---")
+    
+    # Ensure asset directories exist
+    settings.UPLOAD_DIRECTORY.mkdir(parents=True, exist_ok=True)
+    settings.PREDICTIONS_DIRECTORY.mkdir(parents=True, exist_ok=True)
+    
+    # Load models
+    models["classifier"] = YOLO(settings.CLASSIFIER_MODEL_PATH)
+    models["detection"] = YOLO(settings.DETECTION_MODEL_PATH)
+    print("--- Models loaded successfully ---")
+    
+    yield
+    
+    print("--- Server shutting down ---")
+    models.clear()
+
+app = FastAPI(lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -88,16 +114,16 @@ async def predict(
     
     try:
         if extension in ["jpg", "jpeg", "png"]:
-            if not predict.models.get("classifier"):
+            if not models.get("classifier"):
                 raise HTTPException(status_code=500, detail="CNN model is not available.")
             
-            results = predict.predict_with_classifier(file_path, imgsz)
+            results = predict_with_classifier(file_path, imgsz)
 
         elif extension in ["mp4"]:
-            if not predict.models.get("detection"):
+            if not models.get("detection"):
                     raise HTTPException(status_code=500, detail="YOLO detection model is not available.")
 
-            results = predict.predict_with_detection(file_path, conf, imgsz, speed_factor)
+            results = predict_with_detection(file_path, conf, imgsz, speed_factor)
         else:
             # This case should technically not be reached due to upload validation
             raise HTTPException(status_code=400, detail="Unsupported file type for prediction")

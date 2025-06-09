@@ -49,6 +49,7 @@ COPY --from=builder /opt/venv /opt/venv
 # Copy the application code
 COPY . .
 
+RUN mkdir -p /app/assets/predictions
 RUN mkdir -p /app/assets/uploads
 
 # Set the PATH to include the virtual environment
