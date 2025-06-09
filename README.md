@@ -97,7 +97,7 @@ For an image:
             {"class_name": "dog", "confidence": 0.05},
             {"class_name": "couch", "confidence": 0.01}
         ],
-        "labeled_image_url": "/assets/predictions/a1b2c3d4e5_1678886400_predicted.jpg",
+        "path": "/assets/predictions/a1b2c3d4e5_1678886400_predicted.jpg",
         "model": "YOLO Classifier"
     }
 }
@@ -116,7 +116,7 @@ For a video:
             [{"class_name": "person", "confidence": 0.88}],
             [{"class_name": "person", "confidence": 0.89}, {"class_name": "car", "confidence": 0.76}]
         ],
-        "labeled_video_url": "/assets/predictions/f6g7h8i9j0_1678886500_predicted.mp4",
+        "path": "/assets/predictions/f6g7h8i9j0_1678886500_predicted.mp4",
         "model": "YOLOv8 Detection"
     }
 }
