@@ -7,6 +7,7 @@ from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
 from .config import get_settings
+from .diseases import DISEASES_ENUM
 
 settings = get_settings()
 models: Dict[str, Any] = {}
@@ -36,10 +37,18 @@ def predict_with_classifier(image_path: Path, imgsz: int) -> Dict[str, Any]:
         class_index = top5_indices[i]
         confidence = top5_confidences[i]
         class_name = names_dict[class_index]
-        top_predictions.append({
+
+        prediction_details = {
             "class_name": class_name,
             "confidence": confidence
-        })
+        }
+
+        disease_info = DISEASES_ENUM.get(class_name.replace("-", "_"))
+        if disease_info:
+            prediction_details.update(disease_info)
+
+        top_predictions.append(prediction_details)
+
     
     labeled_image_path = None
     if top_predictions:
@@ -125,7 +134,18 @@ def predict_with_detection(video_path: Path, conf: float, imgsz: int, speed_fact
                 box_data = box.tolist()
                 x1, y1, x2, y2, pred_conf, class_id = box_data
                 class_name = yolo_model.names[int(class_id)]
-                frame_detections.append({"box_coordinates": [x1, y1, x2, y2], "confidence": pred_conf, "class_id": int(class_id), "class_name": class_name})
+
+                prediction_details = {
+                        "box_coordinates": [x1, y1, x2, y2], 
+                        "confidence": pred_conf, 
+                        "class_name": class_name,
+                }
+
+                disease_info = DISEASES_ENUM.get(class_name.replace("-", "_"))
+                if disease_info:
+                    prediction_details.update(disease_info)
+
+                frame_detections.append(prediction_details)
                 color, label = (0, 255, 0), f"{class_name}: {pred_conf:.2f}"
                 font, font_scale, thickness = cv2.FONT_HERSHEY_SIMPLEX, 1, 2
                 (text_width, text_height), baseline = cv2.getTextSize(label, font, font_scale, thickness)

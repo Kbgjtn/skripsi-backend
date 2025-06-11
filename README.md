@@ -57,94 +57,198 @@ Example Success Response (201 Created)
    - Method: GET
    - Endpoint: /predict/{filename}
    - Path Parameter:
-        filename (string, required): The unique filename returned by the /upload endpoint.
+     filename (string, required): The unique filename returned by the /upload endpoint.
    - Query Parameters:
-        conf (float, optional, default: 0.25): Confidence threshold for object detection in videos.
-        imgsz (int, optional, default: 640): Image size for model input.
-        speed_factor (float, optional, default: 2.0): Playback speed modifier for output videos. >1 is slower, <1 is faster.
+     conf (float, optional, default: 0.25): Confidence threshold for object detection in videos.
+     imgsz (int, optional, default: 640): Image size for model input.
+     speed_factor (float, optional, default: 2.0): Playback speed modifier for output videos. >1 is slower, <1 is faster.
 
 Example Request (curl)
 
 - For an image:
 
 ```sh
-curl -X GET "[http://127.0.0.1:8000/predict/a1b2c3d4e5_1678886400.jpg?imgsz=1280](http://127.0.0.1:8000/predict/a1b2c3d4e5_1678886400.jpg?imgsz=1280)"
+curl -X GET "[http://127.0.0.1:8000/predict/a1b2c3d4e5_1678886400.jpg?imgsz=1280](http://127.0.0.1:8000/predict/a1b2c3d4e5_1678886400.jpg?imgsz=224)"
 ```
 
 - For a video (slowing it down to quarter speed):
+
 ```sh
-curl -X GET "[http://127.0.0.1:8000/predict/f6g7h8i9j0_1678886500.mp4?conf=0.4&speed_factor=4.0](http://127.0.0.1:8000/predict/f6g7h8i9j0_1678886500.mp4?conf=0.4&speed_factor=4.0)"
+curl -X GET
+"[http://127.0.0.1:8000/predict/f6g7h8i9j0_1678886500.mp4?conf=0.4&speed_factor=4.0](http://127.0.0.1:8000/predict/f6g7h8i9j0_1678886500.mp4?conf=0.4&speed_factor=4.0&imgsz=224)"
 ```
 
 Example Success Response (200 OK)
 
 - For an image:
+
 ```json
 {
-  "filename": "a1b2c3d4e5_1678886400.jpg",
-  "parameters": {
-    "conf": 0.25,
-    "imgsz": 1280,
-    "speed_factor": 2.0
-  },
+  "filename": "28b0273b7d6010af.png",
   "results": {
+    "path": "assets/28b0273b7d6010af_predicted.jpg",
     "predictions": [
       {
-        "class_name": "cat",
-        "confidence": 0.94
+        "class_name": "algal_spot",
+        "confidence": 0.9996527433395386,
+        "id": 1,
+        "name": "Algal Spot",
+        "slug": "algal_spot",
+        "description": "Algal spot merupakan penyakit yang menyerang tanaman teh yang disebabkan oleh alga Cephaleuros virescens. Daun teh yang mengidap penyakit ini memiliki gejala berupa bercak yang menonjol, berbentuk bulat, berwarna oranye hingga cokelat tua yang tersebar di permukaan daun."
       },
       {
-        "class_name": "dog",
-        "confidence": 0.05
+        "class_name": "helopeltis",
+        "confidence": 0.00024160525936167687,
+        "id": 5,
+        "name": "Helopeltis",
+        "slug": "helopeltis",
+        "description": "Helopeltis merupakan sebuah serangga hama yang menjadi ancaman bagi berbagai tanaman budidaya di Asia, termasuk tanaman teh. Hama ini merusak tanaman inangnya dengan cara menghisap cairan, yang menghasilkan munculnya bercak coklat atau tusukan kecil pada permukaan tanaman"
       },
       {
-        "class_name": "couch",
-        "confidence": 0.01
+        "class_name": "gray_blight",
+        "confidence": 4.34454414062202e-5,
+        "id": 3,
+        "name": "Gray Blight",
+        "slug": "gray_blight",
+        "description": "Infeksi yang menimbulkan bercak abu-abu pada daun, biasanya menyerang daun-daun yang sudah tua."
       }
     ],
-    "path": "/assets/predictions/a1b2c3d4e5_1678886400_predicted.jpg",
     "model": "YOLO Classifier"
   }
 }
 ```
 
 For a video:
+
 ```json
 {
-  "filename": "f6g7h8i9j0_1678886500.mp4",
-  "parameters": {
-    "conf": 0.4,
-    "imgsz": 640,
-    "speed_factor": 4.0
-  },
+  "filename": "f32dc7a0cd77e655.mp4",
   "results": {
+    "path": "assets/f32dc7a0cd77e655_predicted.mp4",
     "detections": [
       [
         {
-          "class_name": "person",
-          "confidence": 0.88
+          "box_coordinates": [
+            2917.26708984375, 0.0, 3837.86279296875, 740.156982421875
+          ],
+          "confidence": 0.25878429412841797,
+          "class_id": 5,
+          "class_name": "red-rust",
+          "id": 8,
+          "name": "Red Rust",
+          "slug": "red_rust",
+          "description": "Penyakit red rust merupakan penyakit pada tanaman teh yang disebabkan oleh alga Cephaleuros parasiticus Karst. Penyakit ini ditandai dengan munculnya bercak-bercak berwarna merah atau oranye pada permukaan daun."
         }
       ],
       [
         {
-          "class_name": "person",
-          "confidence": 0.89
-        },
+          "box_coordinates": [
+            284.9656066894531, 1472.3970947265625, 1475.37255859375, 2160.0
+          ],
+          "confidence": 0.25862830877304077,
+          "class_id": 5,
+          "class_name": "red-rust",
+          "id": 8,
+          "name": "Red Rust",
+          "slug": "red_rust",
+          "description": "Penyakit red rust merupakan penyakit pada tanaman teh yang disebabkan oleh alga Cephaleuros parasiticus Karst. Penyakit ini ditandai dengan munculnya bercak-bercak berwarna merah atau oranye pada permukaan daun."
+        }
+      ],
+      [
         {
-          "class_name": "car",
-          "confidence": 0.76
+          "box_coordinates": [
+            2886.787353515625, 0.0, 3838.641357421875, 724.7286987304688
+          ],
+          "confidence": 0.2710469663143158,
+          "class_id": 5,
+          "class_name": "red-rust",
+          "id": 8,
+          "name": "Red Rust",
+          "slug": "red_rust",
+          "description": "Penyakit red rust merupakan penyakit pada tanaman teh yang disebabkan oleh alga Cephaleuros parasiticus Karst. Penyakit ini ditandai dengan munculnya bercak-bercak berwarna merah atau oranye pada permukaan daun."
+        }
+      ],
+      [
+        {
+          "box_coordinates": [
+            0.3017316460609436, 0.0, 586.510986328125, 691.0223388671875
+          ],
+          "confidence": 0.2509526312351227,
+          "class_id": 5,
+          "class_name": "red-rust",
+          "id": 8,
+          "name": "Red Rust",
+          "slug": "red_rust",
+          "description": "Penyakit red rust merupakan penyakit pada tanaman teh yang disebabkan oleh alga Cephaleuros parasiticus Karst. Penyakit ini ditandai dengan munculnya bercak-bercak berwarna merah atau oranye pada permukaan daun."
+        }
+      ],
+      [
+        {
+          "box_coordinates": [
+            2894.89111328125, 0.0, 3838.8662109375, 723.3228759765625
+          ],
+          "confidence": 0.2937139868736267,
+          "class_id": 5,
+          "class_name": "red-rust",
+          "id": 8,
+          "name": "Red Rust",
+          "slug": "red_rust",
+          "description": "Penyakit red rust merupakan penyakit pada tanaman teh yang disebabkan oleh alga Cephaleuros parasiticus Karst. Penyakit ini ditandai dengan munculnya bercak-bercak berwarna merah atau oranye pada permukaan daun."
+        }
+      ],
+      [
+        {
+          "box_coordinates": [
+            2889.59619140625, 0.0, 3837.7509765625, 727.6832275390625
+          ],
+          "confidence": 0.28483179211616516,
+          "class_id": 5,
+          "class_name": "red-rust",
+          "id": 8,
+          "name": "Red Rust",
+          "slug": "red_rust",
+          "description": "Penyakit red rust merupakan penyakit pada tanaman teh yang disebabkan oleh alga Cephaleuros parasiticus Karst. Penyakit ini ditandai dengan munculnya bercak-bercak berwarna merah atau oranye pada permukaan daun."
+        }
+      ],
+      [
+        {
+          "box_coordinates": [
+            2879.1650390625, 0.0, 3838.232666015625, 726.5857543945312
+          ],
+          "confidence": 0.25069525837898254,
+          "class_id": 5,
+          "class_name": "red-rust",
+          "id": 8,
+          "name": "Red Rust",
+          "slug": "red_rust",
+          "description": "Penyakit red rust merupakan penyakit pada tanaman teh yang disebabkan oleh alga Cephaleuros parasiticus Karst. Penyakit ini ditandai dengan munculnya bercak-bercak berwarna merah atau oranye pada permukaan daun."
+        }
+      ],
+      [
+        {
+          "box_coordinates": [
+            2876.187744140625, 0.0, 3836.28515625, 740.77001953125
+          ],
+          "confidence": 0.25497981905937195,
+          "class_id": 5,
+          "class_name": "red-rust",
+          "id": 8,
+          "name": "Red Rust",
+          "slug": "red_rust",
+          "description": "Penyakit red rust merupakan penyakit pada tanaman teh yang disebabkan oleh alga Cephaleuros parasiticus Karst. Penyakit ini ditandai dengan munculnya bercak-bercak berwarna merah atau oranye pada permukaan daun."
         }
       ]
     ],
-    "path": "/assets/predictions/f6g7h8i9j0_1678886500_predicted.mp4",
     "model": "YOLOv8 Detection"
   }
 }
 ```
+
 3. GET /assets/{filename}
    Serve a static file (image or video) from the assets directory. This is used to retrieve the labeled media generated by the /predict endpoint.
-  - Method: GET
-  - Endpoint: /assets/{filename}
+
+- Method: GET
+- Endpoint: /assets/{filename}
 
 Example Request (In Browser or curl)
 
@@ -163,11 +267,12 @@ Example Request (In Browser or curl)
 This project is designed to be run with Docker and Docker Compose.
 Prerequisites
 
-   - Docker
-   - Docker Compose
+- Docker
+- Docker Compose
 
 1. Project Structure
-Ensure your project is structured as follows:
+   Ensure your project is structured as follows:
+
 ```
 .
 ├── app/
@@ -199,7 +304,7 @@ Ensure your project is structured as follows:
 
 Copy the example environment file to create your local configuration:
 
-```cp example.env .env```
+`cp example.env .env`
 
 You can now edit the .env file to change the server port, model paths, or supported file types. The default values will work out-of-the-box. 3. Add Your Models
 You can now edit the .env file to change the server port, model paths, or supported file types. The default values will work out-of-the-box. 3. Add Your Models
@@ -209,7 +314,7 @@ Place your trained YOLO models into the assets/models/ directory. Ensure they ar
 
 From the root directory of the project, run the following command:
 
-```docker-compose -f compose.yaml up --build```
+`docker-compose -f compose.yaml up --build`
 
 --build: This flag is only needed the first time you run the service or after making changes to the Dockerfile, entrypoint.sh, or requirements.txt.
 
@@ -218,4 +323,4 @@ The API will be available at http://127.0.0.1:8000 (or whichever port you config
 
 To stop the running containers, press Ctrl+C in the terminal where compose is running, and then execute:
 
-```docker-compose -f compose.yaml down```
+`docker-compose -f compose.yaml down`
