@@ -7,3 +7,4 @@ opencv-python-headless
 aiofiles
 python-multipart
 pydantic_settings
+numpy<2

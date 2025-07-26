@@ -23,7 +23,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt .
 # --- OPTIMIZATION: Install CPU-only versions of torch and torchvision ---
 # This is the single biggest size reduction.
-RUN pip install torch==2.1.0 torchvision==0.16.0 --index-url https://download.pytorch.org/whl/cpu
+RUN pip install "numpy<2" torch==2.1.0 torchvision==0.16.0 --index-url https://download.pytorch.org/whl/cpu
 RUN pip install -r requirements.txt
 
 

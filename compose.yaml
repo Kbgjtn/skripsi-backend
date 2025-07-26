@@ -1,16 +1,17 @@
 services:
-  rest-svc:
+  tealeave-rest:
+    container_name: tealeave-rest
+    image: ghcr.io/coocobolo/thesis/tealeave-rest:latest
     build:
       dockerfile: builds/Dockerfile
       tags:
-        - coocobolo/rest-svc:latest
-    container_name: rest-svc
+        - ghcr.io/coocobolo/thesis/tealeave-rest:latest
     env_file:
       - .env
     ports:
       - 8000:8000
     restart: unless-stopped
     volumes:
-      - rest_svc_data:/app
+      - tealeave-rest-data:/app
 volumes:
-  rest_svc_data:
+  tealeave-rest-data:
